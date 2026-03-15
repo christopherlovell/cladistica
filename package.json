@@ -1,5 +1,5 @@
 {
-  "name": "cladograms",
+  "name": "cladistica",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/christopherlovell/cladograms.git"
+    "url": "git+https://github.com/christopherlovell/cladistica.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/christopherlovell/cladograms/issues"
+    "url": "https://github.com/christopherlovell/cladistica/issues"
   },
-  "homepage": "https://github.com/christopherlovell/cladograms#readme",
+  "homepage": "https://github.com/christopherlovell/cladistica#readme",
   "devDependencies": {
     "vite": "^8.0.0"
   },

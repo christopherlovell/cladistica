@@ -323,8 +323,12 @@ main {
 .node text {
   font-size: 11px;
   fill: var(--text);
-  pointer-events: none;
+  cursor: pointer;
   transition: fill 0.2s;
+}
+
+.node text:hover {
+  fill: var(--accent);
 }
 
 .node text.label-clade {
