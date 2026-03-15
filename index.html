@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dinosauria Cladogram</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Dinosauria</h1>
+    <div class="controls">
+      <div class="search-wrapper">
+        <input type="text" id="search" placeholder="Search taxa..." autocomplete="off" />
+        <ul id="search-results"></ul>
+      </div>
+      <div class="view-toggle">
+        <button id="btn-radial" class="active" title="Radial view">Radial</button>
+        <button id="btn-rectangular" title="Rectangular view">Rectangular</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div id="viz"></div>
+    <aside id="detail-panel" class="hidden">
+      <button id="detail-close" aria-label="Close">&times;</button>
+      <h2 id="detail-name"></h2>
+      <div id="detail-rank" class="detail-badge"></div>
+      <p id="detail-description"></p>
+      <dl id="detail-meta"></dl>
+    </aside>
+  </main>
+  <div id="tooltip"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

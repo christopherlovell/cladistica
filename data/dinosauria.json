@@ -1,0 +1,637 @@
+{
+  "meta": {
+    "title": "Dinosauria Phylogeny",
+    "description": "Phylogenetic tree of Dinosauria and related archosaurs",
+    "sources": [
+      "Benton, M.J. (2005) Vertebrate Palaeontology",
+      "Nesbitt, S.J. (2011) The early evolution of archosaurs",
+      "Baron, M.G. et al. (2017) A new hypothesis of dinosaur relationships"
+    ],
+    "timeScale": { "unit": "Ma", "min": 252, "max": 0 }
+  },
+  "tree": {
+    "name": "Archosauria",
+    "rank": "clade",
+    "timeRange": [252, 0],
+    "children": [
+      {
+        "name": "Pseudosuchia",
+        "rank": "clade",
+        "timeRange": [252, 0],
+        "info": { "description": "The crocodilian lineage of archosaurs, including modern crocodilians and many extinct forms." },
+        "children": [
+          {
+            "name": "Crocodylomorpha",
+            "rank": "clade",
+            "timeRange": [228, 0],
+            "info": { "description": "Includes modern crocodilians and their closest extinct relatives." },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Avemetatarsalia",
+        "rank": "clade",
+        "timeRange": [245, 0],
+        "info": { "description": "The bird-line archosaurs, including pterosaurs, dinosaurs, and birds." },
+        "children": [
+          {
+            "name": "Pterosauria",
+            "rank": "order",
+            "timeRange": [228, 66],
+            "extinct": true,
+            "info": { "description": "Flying reptiles, the first vertebrates to evolve powered flight.", "diet": "varied" },
+            "children": [
+              {
+                "name": "Rhamphorhynchus",
+                "rank": "genus",
+                "timeRange": [152, 145],
+                "extinct": true,
+                "info": { "description": "Long-tailed pterosaur from the Late Jurassic.", "diet": "piscivore" }
+              },
+              {
+                "name": "Pteranodon",
+                "rank": "genus",
+                "timeRange": [86, 84],
+                "extinct": true,
+                "info": { "description": "Large toothless pterosaur with a wingspan up to 7 metres.", "diet": "piscivore" }
+              },
+              {
+                "name": "Quetzalcoatlus",
+                "rank": "genus",
+                "timeRange": [68, 66],
+                "extinct": true,
+                "info": { "description": "One of the largest known flying animals, with a wingspan of 10-11 metres.", "diet": "carnivore" }
+              }
+            ]
+          },
+          {
+            "name": "Dinosauromorpha",
+            "rank": "clade",
+            "timeRange": [242, 0],
+            "children": [
+              {
+                "name": "Lagerpetidae",
+                "rank": "family",
+                "timeRange": [236, 210],
+                "extinct": true,
+                "info": { "description": "Small, cursorial archosaurs closely related to dinosaurs." },
+                "children": []
+              },
+              {
+                "name": "Dinosauriformes",
+                "rank": "clade",
+                "timeRange": [242, 0],
+                "children": [
+                  {
+                    "name": "Silesauridae",
+                    "rank": "family",
+                    "timeRange": [242, 210],
+                    "extinct": true,
+                    "info": { "description": "Early dinosauriforms, possibly herbivorous or omnivorous." },
+                    "children": []
+                  },
+                  {
+                    "name": "Dinosauria",
+                    "rank": "clade",
+                    "timeRange": [233, 0],
+                    "info": { "description": "The dinosaurs: one of the most successful groups of animals to have ever lived." },
+                    "children": [
+                      {
+                        "name": "Saurischia",
+                        "rank": "order",
+                        "timeRange": [233, 0],
+                        "info": { "description": "Lizard-hipped dinosaurs, including theropods and sauropodomorphs." },
+                        "children": [
+                          {
+                            "name": "Herrerasauridae",
+                            "rank": "family",
+                            "timeRange": [233, 228],
+                            "extinct": true,
+                            "info": { "description": "Among the earliest dinosaurs, predatory and bipedal.", "diet": "carnivore" },
+                            "children": [
+                              {
+                                "name": "Herrerasaurus",
+                                "rank": "genus",
+                                "timeRange": [231, 228],
+                                "extinct": true,
+                                "info": { "description": "One of the oldest known dinosaurs, from Argentina.", "diet": "carnivore", "length_m": 6 }
+                              }
+                            ]
+                          },
+                          {
+                            "name": "Theropoda",
+                            "rank": "clade",
+                            "timeRange": [231, 0],
+                            "info": { "description": "Bipedal, mostly carnivorous dinosaurs. Includes the ancestors of birds.", "diet": "carnivore" },
+                            "children": [
+                              {
+                                "name": "Coelophysidae",
+                                "rank": "family",
+                                "timeRange": [228, 190],
+                                "extinct": true,
+                                "children": [
+                                  {
+                                    "name": "Coelophysis",
+                                    "rank": "genus",
+                                    "timeRange": [216, 203],
+                                    "extinct": true,
+                                    "info": { "description": "Small, agile predator from the Late Triassic.", "diet": "carnivore", "length_m": 3 }
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "Dilophosaurus",
+                                "rank": "genus",
+                                "timeRange": [193, 190],
+                                "extinct": true,
+                                "info": { "description": "Early Jurassic theropod with distinctive paired crests on its skull.", "diet": "carnivore", "length_m": 7 }
+                              },
+                              {
+                                "name": "Ceratosauria",
+                                "rank": "clade",
+                                "timeRange": [201, 66],
+                                "extinct": true,
+                                "children": [
+                                  {
+                                    "name": "Ceratosaurus",
+                                    "rank": "genus",
+                                    "timeRange": [153, 148],
+                                    "extinct": true,
+                                    "info": { "description": "Large predator with a horn on its snout.", "diet": "carnivore", "length_m": 6 }
+                                  },
+                                  {
+                                    "name": "Abelisauridae",
+                                    "rank": "family",
+                                    "timeRange": [170, 66],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Carnotaurus",
+                                        "rank": "genus",
+                                        "timeRange": [72, 69],
+                                        "extinct": true,
+                                        "info": { "description": "Fast predator with bull-like horns and tiny arms.", "diet": "carnivore", "length_m": 8 }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "Tetanurae",
+                                "rank": "clade",
+                                "timeRange": [195, 0],
+                                "children": [
+                                  {
+                                    "name": "Megalosauridae",
+                                    "rank": "family",
+                                    "timeRange": [170, 145],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Megalosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [166, 163],
+                                        "extinct": true,
+                                        "info": { "description": "The first dinosaur to be formally named and described (1824).", "diet": "carnivore", "length_m": 9 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Spinosauridae",
+                                    "rank": "family",
+                                    "timeRange": [130, 93],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Spinosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [99, 93],
+                                        "extinct": true,
+                                        "info": { "description": "Possibly the largest carnivorous dinosaur. Semi-aquatic with a sail on its back.", "diet": "piscivore", "length_m": 15 }
+                                      },
+                                      {
+                                        "name": "Baryonyx",
+                                        "rank": "genus",
+                                        "timeRange": [130, 125],
+                                        "extinct": true,
+                                        "info": { "description": "Fish-eating theropod with a large claw on each hand.", "diet": "piscivore", "length_m": 10 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Allosauridae",
+                                    "rank": "family",
+                                    "timeRange": [155, 145],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Allosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [155, 145],
+                                        "extinct": true,
+                                        "info": { "description": "Apex predator of the Late Jurassic Morrison Formation.", "diet": "carnivore", "length_m": 12 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Coelurosauria",
+                                    "rank": "clade",
+                                    "timeRange": [165, 0],
+                                    "children": [
+                                      {
+                                        "name": "Tyrannosauridae",
+                                        "rank": "family",
+                                        "timeRange": [80, 66],
+                                        "extinct": true,
+                                        "info": { "description": "Apex predators of the Late Cretaceous.", "diet": "carnivore" },
+                                        "children": [
+                                          {
+                                            "name": "Tyrannosaurus",
+                                            "rank": "genus",
+                                            "timeRange": [68, 66],
+                                            "extinct": true,
+                                            "info": { "description": "The 'tyrant lizard king'. One of the largest land predators ever.", "diet": "carnivore", "length_m": 12.3 }
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "name": "Ornithomimosauria",
+                                        "rank": "clade",
+                                        "timeRange": [130, 66],
+                                        "extinct": true,
+                                        "info": { "description": "Ostrich-like dinosaurs, likely omnivorous.", "diet": "omnivore" },
+                                        "children": [
+                                          {
+                                            "name": "Gallimimus",
+                                            "rank": "genus",
+                                            "timeRange": [70, 66],
+                                            "extinct": true,
+                                            "info": { "description": "Fast-running ornithomimid from Mongolia.", "diet": "omnivore", "length_m": 6 }
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "name": "Maniraptora",
+                                        "rank": "clade",
+                                        "timeRange": [165, 0],
+                                        "children": [
+                                          {
+                                            "name": "Therizinosauridae",
+                                            "rank": "family",
+                                            "timeRange": [90, 66],
+                                            "extinct": true,
+                                            "children": [
+                                              {
+                                                "name": "Therizinosaurus",
+                                                "rank": "genus",
+                                                "timeRange": [70, 66],
+                                                "extinct": true,
+                                                "info": { "description": "Bizarre theropod with enormous claws up to 1m long. Likely herbivorous.", "diet": "herbivore", "length_m": 10 }
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "name": "Oviraptorosauria",
+                                            "rank": "clade",
+                                            "timeRange": [130, 66],
+                                            "extinct": true,
+                                            "children": [
+                                              {
+                                                "name": "Oviraptor",
+                                                "rank": "genus",
+                                                "timeRange": [75, 71],
+                                                "extinct": true,
+                                                "info": { "description": "Misnamed 'egg thief' — likely brooding its own eggs when discovered.", "diet": "omnivore", "length_m": 2 }
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "name": "Dromaeosauridae",
+                                            "rank": "family",
+                                            "timeRange": [167, 66],
+                                            "extinct": true,
+                                            "info": { "description": "The 'raptors' — agile predators with a sickle claw on each foot.", "diet": "carnivore" },
+                                            "children": [
+                                              {
+                                                "name": "Velociraptor",
+                                                "rank": "genus",
+                                                "timeRange": [75, 71],
+                                                "extinct": true,
+                                                "info": { "description": "Small feathered predator from Mongolia. Turkey-sized, not as in Jurassic Park.", "diet": "carnivore", "length_m": 2 }
+                                              },
+                                              {
+                                                "name": "Deinonychus",
+                                                "rank": "genus",
+                                                "timeRange": [115, 108],
+                                                "extinct": true,
+                                                "info": { "description": "The raptor that inspired the Jurassic Park 'Velociraptors'.", "diet": "carnivore", "length_m": 3.4 }
+                                              },
+                                              {
+                                                "name": "Utahraptor",
+                                                "rank": "genus",
+                                                "timeRange": [139, 134],
+                                                "extinct": true,
+                                                "info": { "description": "Largest known dromaeosaurid, up to 7 metres long.", "diet": "carnivore", "length_m": 7 }
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "name": "Troodontidae",
+                                            "rank": "family",
+                                            "timeRange": [167, 66],
+                                            "extinct": true,
+                                            "children": [
+                                              {
+                                                "name": "Troodon",
+                                                "rank": "genus",
+                                                "timeRange": [77, 66],
+                                                "extinct": true,
+                                                "info": { "description": "Had one of the largest brain-to-body ratios of any dinosaur.", "diet": "omnivore", "length_m": 2.4 }
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "name": "Avialae",
+                                            "rank": "clade",
+                                            "timeRange": [160, 0],
+                                            "info": { "description": "Birds and their closest relatives — the surviving dinosaurs." },
+                                            "children": [
+                                              {
+                                                "name": "Archaeopteryx",
+                                                "rank": "genus",
+                                                "timeRange": [150, 148],
+                                                "extinct": true,
+                                                "info": { "description": "The 'first bird'. Transitional form between feathered dinosaurs and modern birds.", "diet": "carnivore", "length_m": 0.5 }
+                                              },
+                                              {
+                                                "name": "Aves",
+                                                "rank": "class",
+                                                "timeRange": [130, 0],
+                                                "extinct": false,
+                                                "info": { "description": "Modern birds — the only surviving dinosaurs, with over 10,000 living species." }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "name": "Sauropodomorpha",
+                            "rank": "clade",
+                            "timeRange": [231, 66],
+                            "extinct": true,
+                            "info": { "description": "Long-necked, mostly herbivorous dinosaurs. Includes the largest land animals ever.", "diet": "herbivore" },
+                            "children": [
+                              {
+                                "name": "Plateosaurus",
+                                "rank": "genus",
+                                "timeRange": [214, 204],
+                                "extinct": true,
+                                "info": { "description": "One of the first large herbivorous dinosaurs.", "diet": "herbivore", "length_m": 8 }
+                              },
+                              {
+                                "name": "Sauropoda",
+                                "rank": "clade",
+                                "timeRange": [201, 66],
+                                "extinct": true,
+                                "info": { "description": "The giant long-necked dinosaurs.", "diet": "herbivore" },
+                                "children": [
+                                  {
+                                    "name": "Diplodocidae",
+                                    "rank": "family",
+                                    "timeRange": [155, 145],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Diplodocus",
+                                        "rank": "genus",
+                                        "timeRange": [154, 150],
+                                        "extinct": true,
+                                        "info": { "description": "Iconic long-necked dinosaur with a whip-like tail.", "diet": "herbivore", "length_m": 26 }
+                                      },
+                                      {
+                                        "name": "Apatosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [152, 150],
+                                        "extinct": true,
+                                        "info": { "description": "Formerly known as 'Brontosaurus'. Massive sauropod from North America.", "diet": "herbivore", "length_m": 22 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Brachiosauridae",
+                                    "rank": "family",
+                                    "timeRange": [155, 100],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Brachiosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [154, 150],
+                                        "extinct": true,
+                                        "info": { "description": "Tall sauropod with longer forelimbs than hindlimbs. Could reach 13m high.", "diet": "herbivore", "length_m": 22 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Titanosauria",
+                                    "rank": "clade",
+                                    "timeRange": [130, 66],
+                                    "extinct": true,
+                                    "info": { "description": "The last and largest group of sauropods." },
+                                    "children": [
+                                      {
+                                        "name": "Argentinosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [96, 94],
+                                        "extinct": true,
+                                        "info": { "description": "One of the largest known land animals ever, estimated at 70-80 tonnes.", "diet": "herbivore", "length_m": 35 }
+                                      },
+                                      {
+                                        "name": "Patagotitan",
+                                        "rank": "genus",
+                                        "timeRange": [101, 95],
+                                        "extinct": true,
+                                        "info": { "description": "Contender for largest dinosaur ever. Estimated at 69 tonnes.", "diet": "herbivore", "length_m": 37 }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Ornithischia",
+                        "rank": "order",
+                        "timeRange": [231, 66],
+                        "extinct": true,
+                        "info": { "description": "Bird-hipped dinosaurs. Despite the name, not ancestors of birds.", "diet": "herbivore" },
+                        "children": [
+                          {
+                            "name": "Thyreophora",
+                            "rank": "clade",
+                            "timeRange": [200, 66],
+                            "extinct": true,
+                            "info": { "description": "Armoured dinosaurs: stegosaurs and ankylosaurs.", "diet": "herbivore" },
+                            "children": [
+                              {
+                                "name": "Stegosauria",
+                                "rank": "clade",
+                                "timeRange": [170, 66],
+                                "extinct": true,
+                                "children": [
+                                  {
+                                    "name": "Stegosaurus",
+                                    "rank": "genus",
+                                    "timeRange": [155, 150],
+                                    "extinct": true,
+                                    "info": { "description": "Iconic plated dinosaur with a spiked tail ('thagomizer').", "diet": "herbivore", "length_m": 9 }
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "Ankylosauria",
+                                "rank": "clade",
+                                "timeRange": [163, 66],
+                                "extinct": true,
+                                "children": [
+                                  {
+                                    "name": "Ankylosaurus",
+                                    "rank": "genus",
+                                    "timeRange": [68, 66],
+                                    "extinct": true,
+                                    "info": { "description": "Heavily armoured dinosaur with a massive tail club.", "diet": "herbivore", "length_m": 8 }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "name": "Neornithischia",
+                            "rank": "clade",
+                            "timeRange": [196, 66],
+                            "extinct": true,
+                            "children": [
+                              {
+                                "name": "Ornithopoda",
+                                "rank": "clade",
+                                "timeRange": [196, 66],
+                                "extinct": true,
+                                "info": { "description": "Bipedal/quadrupedal herbivores, including the duck-billed dinosaurs." },
+                                "children": [
+                                  {
+                                    "name": "Iguanodon",
+                                    "rank": "genus",
+                                    "timeRange": [126, 113],
+                                    "extinct": true,
+                                    "info": { "description": "Second dinosaur ever named. Had distinctive thumb spikes.", "diet": "herbivore", "length_m": 10 }
+                                  },
+                                  {
+                                    "name": "Hadrosauridae",
+                                    "rank": "family",
+                                    "timeRange": [86, 66],
+                                    "extinct": true,
+                                    "info": { "description": "Duck-billed dinosaurs. Among the most successful herbivores of the Late Cretaceous." },
+                                    "children": [
+                                      {
+                                        "name": "Parasaurolophus",
+                                        "rank": "genus",
+                                        "timeRange": [76, 73],
+                                        "extinct": true,
+                                        "info": { "description": "Known for its long curved cranial crest, possibly used for vocalisation.", "diet": "herbivore", "length_m": 10 }
+                                      },
+                                      {
+                                        "name": "Edmontosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [73, 66],
+                                        "extinct": true,
+                                        "info": { "description": "One of the last non-avian dinosaurs. Large herds roamed North America.", "diet": "herbivore", "length_m": 12 }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "Marginocephalia",
+                                "rank": "clade",
+                                "timeRange": [166, 66],
+                                "extinct": true,
+                                "children": [
+                                  {
+                                    "name": "Pachycephalosauria",
+                                    "rank": "clade",
+                                    "timeRange": [130, 66],
+                                    "extinct": true,
+                                    "children": [
+                                      {
+                                        "name": "Pachycephalosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [70, 66],
+                                        "extinct": true,
+                                        "info": { "description": "Dome-headed dinosaur, possibly used its thick skull for head-butting.", "diet": "herbivore", "length_m": 4.5 }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "Ceratopsia",
+                                    "rank": "clade",
+                                    "timeRange": [161, 66],
+                                    "extinct": true,
+                                    "info": { "description": "Horned and frilled dinosaurs." },
+                                    "children": [
+                                      {
+                                        "name": "Psittacosaurus",
+                                        "rank": "genus",
+                                        "timeRange": [126, 101],
+                                        "extinct": true,
+                                        "info": { "description": "Small, early ceratopsian. One of the most species-rich dinosaur genera.", "diet": "herbivore", "length_m": 2 }
+                                      },
+                                      {
+                                        "name": "Ceratopsidae",
+                                        "rank": "family",
+                                        "timeRange": [81, 66],
+                                        "extinct": true,
+                                        "children": [
+                                          {
+                                            "name": "Triceratops",
+                                            "rank": "genus",
+                                            "timeRange": [68, 66],
+                                            "extinct": true,
+                                            "info": { "description": "Three-horned face. One of the last and most recognisable dinosaurs.", "diet": "herbivore", "length_m": 9 }
+                                          },
+                                          {
+                                            "name": "Styracosaurus",
+                                            "rank": "genus",
+                                            "timeRange": [75, 74],
+                                            "extinct": true,
+                                            "info": { "description": "Spectacular frill with long horn-like spikes.", "diet": "herbivore", "length_m": 5.5 }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
