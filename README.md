@@ -26,8 +26,8 @@ Currently includes a Dinosauria phylogeny (~146 taxa from Archosauria to Aves). 
 
 ### Attribution
 
-The dinosaur catalogue referenced during development is maintained by [Aldo Cavini Benedetti](https://docs.google.com/spreadsheets/d/1rgflfIWW6x2h6jRRTe6cRO4YWc3mEKzVmJ7UzREFNq8/edit?gid=22644609#gid=22644609). Phylogenetic placement follows Benton (2005), Nesbitt (2011), and Baron et al. (2017).
+The [dinosaur catalogue spreadsheet](https://docs.google.com/spreadsheets/d/1rgflfIWW6x2h6jRRTe6cRO4YWc3mEKzVmJ7UzREFNq8/edit?gid=22644609#gid=22644609) was referenced during development.
 
 ## License
 
-ISC
+MIT
