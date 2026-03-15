@@ -32,6 +32,21 @@ const CLADE_COLORS = {
   'Pachycephalosauria': '#3fb950',
   'Ceratopsia': '#3fb950',
   'Ceratopsidae': '#3fb950',
+  'Carnosauria': '#f47067',
+  'Carcharodontosauridae': '#f47067',
+  'Compsognathidae': '#ffa198',
+  'Tyrannosauroidea': '#f47067',
+  'Alvarezsauridae': '#ffa198',
+  'Oviraptorosauria': '#ffa198',
+  'Paraves': '#f47067',
+  'Pteranodontidae': '#d2a8ff',
+  'Azhdarchidae': '#d2a8ff',
+  'Crocodylomorpha': '#8b949e',
+  'Heterodontosauridae': '#7ee787',
+  'Nodosauridae': '#3fb950',
+  'Ankylosauridae': '#3fb950',
+  'Iguanodontia': '#7ee787',
+  'Camarasauridae': '#79c0ff',
 };
 
 // Walk up the tree to find the nearest ancestor with a color

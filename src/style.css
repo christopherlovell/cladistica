@@ -121,6 +121,27 @@ header h1 {
   margin-left: 8px;
 }
 
+.tree-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.tree-controls button {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tree-controls button:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
 .view-toggle {
   display: flex;
   border: 1px solid var(--border);
@@ -321,7 +342,7 @@ main {
 }
 
 .node text {
-  font-size: 11px;
+  font-size: 13px;
   fill: var(--text);
   cursor: pointer;
   transition: fill 0.2s;
@@ -333,7 +354,7 @@ main {
 
 .node text.label-clade {
   font-weight: 600;
-  font-size: 11.5px;
+  font-size: 14px;
 }
 
 .node text.label-genus {

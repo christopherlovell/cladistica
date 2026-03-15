@@ -4,7 +4,7 @@ import treeData from '../data/dinosauria.json';
 
 // ── State ──
 let root;
-let currentView = 'radial'; // 'radial' | 'rectangular'
+let currentView = 'rectangular'; // 'radial' | 'rectangular'
 let svg, g, zoomBehavior;
 let width, height;
 
@@ -14,6 +14,14 @@ function init() {
   root.descendants().forEach(d => {
     d._children = d.children;
   });
+
+  // Start fully collapsed, then open one showcase path
+  collapseAll(root);
+  expandPath(root, [
+    'Avemetatarsalia', 'Dinosauromorpha', 'Dinosauriformes',
+    'Dinosauria', 'Saurischia', 'Theropoda', 'Tetanurae',
+    'Coelurosauria', 'Tyrannosauridae', 'Tyrannosaurus'
+  ]);
 
   const container = document.getElementById('viz');
   const rect = container.getBoundingClientRect();
@@ -33,11 +41,7 @@ function init() {
 
   svg.call(zoomBehavior);
 
-  // Initial center
-  const initialTransform = d3.zoomIdentity
-    .translate(width / 2, height / 2)
-    .scale(0.85);
-  svg.call(zoomBehavior.transform, initialTransform);
+  resetView();
 
   render();
   setupControls();
@@ -238,7 +242,7 @@ function computeLayoutDirect() {
   } else {
     const leafCount = h.leaves().length;
     const treeH = Math.max(leafCount * 22, 400);
-    const treeW = Math.max((h.height || 1) * 200, 600);
+    const treeW = Math.max((h.height || 1) * 130, 400);
     const layout = d3.cluster().size([treeH, treeW]);
     layout(h);
   }
@@ -315,13 +319,63 @@ function onNodeDblClick(event, d) {
   // Toggle collapse if has children
   if (orig._children && orig._children.length > 0) {
     if (orig._collapsed) {
+      // Expand this node, but keep its children collapsed
       orig._collapsed = false;
       orig.children = orig._children;
+      for (const child of orig.children) {
+        if (child._children && child._children.length > 0) {
+          child._collapsed = true;
+          child.children = null;
+        }
+      }
     } else {
       orig._collapsed = true;
       orig.children = null;
     }
     render();
+  }
+}
+
+// ── Collapse/Expand helpers ──
+function collapseAll(node) {
+  if (node._children && node._children.length > 0) {
+    // Show root's immediate children, but collapse everything below
+    if (node === root) {
+      node._collapsed = false;
+      node.children = node._children;
+      for (const child of node.children) {
+        collapseAll(child);
+      }
+    } else {
+      node._collapsed = true;
+      node.children = null;
+      for (const child of node._children) {
+        collapseAll(child);
+      }
+    }
+  }
+}
+
+function expandPath(node, names) {
+  if (names.length === 0) return;
+  if (!node._children) return;
+  node._collapsed = false;
+  node.children = node._children;
+  const next = names[0];
+  for (const child of node.children) {
+    if (child.data.name === next) {
+      expandPath(child, names.slice(1));
+    }
+  }
+}
+
+function expandAll(node) {
+  if (node._children && node._children.length > 0) {
+    node._collapsed = false;
+    node.children = node._children;
+    for (const child of node.children) {
+      expandAll(child);
+    }
   }
 }
 
@@ -416,6 +470,16 @@ function setupControls() {
     render();
   });
 
+  document.getElementById('btn-collapse-all').addEventListener('click', () => {
+    collapseAll(root);
+    render();
+  });
+
+  document.getElementById('btn-expand-all').addEventListener('click', () => {
+    expandAll(root);
+    render();
+  });
+
   document.getElementById('detail-close').addEventListener('click', () => {
     const panel = document.getElementById('detail-panel');
     panel.classList.remove('visible');
@@ -435,7 +499,7 @@ function resetView() {
     const t = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85);
     svg.transition().duration(500).call(zoomBehavior.transform, t);
   } else {
-    const t = d3.zoomIdentity.translate(80, -50).scale(0.75);
+    const t = d3.zoomIdentity.translate(width / 6, height / 2 - 100).scale(1);
     svg.transition().duration(500).call(zoomBehavior.transform, t);
   }
 }
