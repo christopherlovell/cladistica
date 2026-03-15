@@ -1,12 +1,15 @@
 import * as d3 from 'd3';
 import { getNodeColor } from './colors.js';
+import { GEO_PERIODS, EPOCH_COLORS_ALT } from './timescale.js';
 import treeData from '../data/dinosauria.json';
 
 // ── State ──
 let root;
 let currentView = 'rectangular'; // 'radial' | 'rectangular'
-let svg, g, zoomBehavior;
+let timelineEnabled = false;
+let svg, g, gTimelineBands, gTimelineHeaders, gTree, zoomBehavior;
 let width, height;
+let spacingH = 1, spacingV = 1;
 
 // ── Init ──
 function init() {
@@ -20,7 +23,7 @@ function init() {
   expandPath(root, [
     'Avemetatarsalia', 'Dinosauromorpha', 'Dinosauriformes',
     'Dinosauria', 'Saurischia', 'Theropoda', 'Tetanurae',
-    'Coelurosauria', 'Tyrannosauridae', 'Tyrannosaurus'
+    'Coelurosauria', 'Tyrannosauroidea', 'Tyrannosauridae', 'Tyrannosaurus'
   ]);
 
   const container = document.getElementById('viz');
@@ -33,11 +36,24 @@ function init() {
     .attr('width', width)
     .attr('height', height);
 
+  // Bands layer: moves with full zoom (behind tree)
+  gTimelineBands = svg.append('g').attr('class', 'timeline-bands-layer');
+  // Main group: tree content
   g = svg.append('g');
+  gTree = g.append('g').attr('class', 'tree-layer');
+  // Headers layer: follows horizontal zoom only, pinned to top
+  gTimelineHeaders = svg.append('g').attr('class', 'timeline-headers-layer');
 
   zoomBehavior = d3.zoom()
-    .scaleExtent([0.2, 5])
-    .on('zoom', (e) => g.attr('transform', e.transform));
+    .scaleExtent([0.2, 8])
+    .on('zoom', (e) => {
+      g.attr('transform', e.transform);
+      // Bands follow full transform but extend beyond viewport
+      gTimelineBands.attr('transform', e.transform);
+      // Headers: reposition elements using the transform values
+      // instead of scaling the group (which distorts text)
+      updateTimelineHeaderPositions(e.transform);
+    });
 
   svg.call(zoomBehavior);
 
@@ -55,63 +71,17 @@ function init() {
   });
 }
 
-// ── Layout ──
-function computeLayout() {
-  const visibleRoot = pruneCollapsed(root);
-
-  if (currentView === 'radial') {
-    const radius = Math.min(width, height) / 2 - 80;
-    const layout = d3.cluster()
-      .size([360, radius])
-      .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
-    layout(visibleRoot);
-
-    visibleRoot.descendants().forEach(d => {
-      d.y = d.depth * (radius / visibleRoot.height);
-    });
-  } else {
-    const leafCount = visibleRoot.leaves().length;
-    const treeHeight = Math.max(leafCount * 20, height - 100);
-    const treeWidth = Math.max(visibleRoot.height * 180, width - 300);
-
-    const layout = d3.cluster().size([treeHeight, treeWidth]);
-    layout(visibleRoot);
-  }
-
-  return visibleRoot;
-}
-
-// Prune collapsed nodes — return a new hierarchy for layout
-function pruneCollapsed(node) {
-  const obj = { ...node.data };
-  if (node.children && !node._collapsed) {
-    obj.children = node.children.map(c => pruneCollapsed(c).data);
-  } else {
-    delete obj.children;
-  }
-
-  const newRoot = d3.hierarchy(obj);
-  // Map back the _collapsed and original data
-  const originals = node.descendants();
-  const newNodes = newRoot.descendants();
-
-  newNodes.forEach((n, i) => {
-    if (i < originals.length) {
-      n._orig = originals[i];
-    }
-  });
-
-  return newRoot;
-}
-
 // ── Render ──
 function render() {
   const layoutRoot = computeLayoutDirect();
   const nodes = layoutRoot.descendants();
   const links = layoutRoot.links();
 
+  // Render timeline bands if enabled
+  renderTimeline(layoutRoot);
+
   // Links
-  const linkSel = g.selectAll('.link')
+  const linkSel = gTree.selectAll('.link')
     .data(links, d => linkId(d));
 
   linkSel.exit().transition().duration(300).style('opacity', 0).remove();
@@ -128,7 +98,7 @@ function render() {
     .attr('stroke', d => getNodeColor(d.target));
 
   // Nodes
-  const nodeSel = g.selectAll('.node')
+  const nodeSel = gTree.selectAll('.node')
     .data(nodes, d => nodeId(d));
 
   nodeSel.exit().transition().duration(300).style('opacity', 0).remove();
@@ -187,12 +157,207 @@ function render() {
     .on('mouseleave', () => hideTooltip());
 }
 
-// ── Direct layout (simpler approach without prune/remap issues) ──
+// ── Timeline rendering ──
+let timeScale = null;
+const HEADER_HEIGHT = 100; // height of the fixed header area
+
+function renderTimeline(layoutRoot) {
+  gTimelineBands.selectAll('*').remove();
+  gTimelineHeaders.selectAll('*').remove();
+
+  if (!timelineEnabled || currentView !== 'rectangular') {
+    timeScale = null;
+    return;
+  }
+
+  const maxMa = 255;
+  const minMa = 0;
+  const treeW = Math.max(maxMa * 10 * spacingH, 800);
+  timeScale = d3.scaleLinear()
+    .domain([maxMa, minMa])
+    .range([0, treeW]);
+
+  // ── Bands: rendered in tree coordinate space, extend far vertically ──
+  const bandTop = -2000;
+  const bandBottom = 8000;
+  const bandHeight = bandBottom - bandTop;
+
+  const epochs = GEO_PERIODS.filter(p => p.level === 2 && p.start <= maxMa);
+  gTimelineBands.selectAll('.epoch-band')
+    .data(epochs)
+    .join('rect')
+    .attr('class', 'epoch-band')
+    .attr('x', d => timeScale(Math.min(d.start, maxMa)))
+    .attr('y', bandTop)
+    .attr('width', d => timeScale(Math.max(d.end, minMa)) - timeScale(Math.min(d.start, maxMa)))
+    .attr('height', bandHeight)
+    .attr('fill', d => EPOCH_COLORS_ALT[d.name] || 'transparent');
+
+  const periods = GEO_PERIODS.filter(p => p.level === 1 && p.start <= maxMa && p.start > minMa);
+  gTimelineBands.selectAll('.period-line')
+    .data(periods)
+    .join('line')
+    .attr('class', 'period-line')
+    .attr('x1', d => timeScale(d.start))
+    .attr('x2', d => timeScale(d.start))
+    .attr('y1', bandTop)
+    .attr('y2', bandBottom)
+    .attr('stroke', 'var(--border)')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', '4 3')
+    .attr('opacity', 0.5);
+
+  // ── Headers: fixed to top of viewport ──
+  // These are in their own group that only follows horizontal transform.
+  // We draw a background so labels are readable over the tree.
+  // SVG starts below the page header (main has padding-top: 52px),
+  // so y=0 in SVG space is flush with the top of the content area.
+  const headerTop = 0;
+
+  // Helper to compute centre x for a period/epoch
+  const cx = d => (timeScale(Math.min(d.start, maxMa)) + timeScale(Math.max(d.end, minMa))) / 2;
+
+  gTimelineHeaders.append('rect')
+    .attr('class', 'timeline-header-bg')
+    .attr('x', -500)
+    .attr('y', headerTop)
+    .attr('width', width + 1000)
+    .attr('height', HEADER_HEIGHT)
+    .attr('fill', 'var(--bg)')
+    .attr('opacity', 0.95);
+
+  // Period labels
+  const periodsForLabels = GEO_PERIODS.filter(p => p.level === 1 && p.end < maxMa);
+  gTimelineHeaders.selectAll('.period-label')
+    .data(periodsForLabels)
+    .join('text')
+    .attr('class', 'period-label')
+    .attr('data-ox', d => cx(d))
+    .attr('x', d => cx(d))
+    .attr('y', headerTop + 26)
+    .attr('text-anchor', 'middle')
+    .attr('fill', 'var(--text)')
+    .attr('font-family', 'system-ui, -apple-system, sans-serif')
+    .attr('font-size', '16px')
+    .attr('font-weight', '700')
+    .attr('letter-spacing', '0.08em')
+    .text(d => d.name.toUpperCase());
+
+  // Epoch labels — wrap onto two lines if the text doesn't fit
+  const epochSel = gTimelineHeaders.selectAll('.epoch-label')
+    .data(epochs)
+    .join('text')
+    .attr('class', 'epoch-label')
+    .attr('data-ox', d => cx(d))
+    .attr('x', d => cx(d))
+    .attr('y', headerTop + 48)
+    .attr('text-anchor', 'middle')
+    .attr('fill', 'var(--text)')
+    .attr('font-family', 'system-ui, -apple-system, sans-serif')
+    .attr('font-size', '12px')
+    .attr('font-weight', '400')
+    .attr('letter-spacing', '0.06em');
+
+  epochSel.each(function(d) {
+    const el = d3.select(this);
+    const bandWidth = Math.abs(timeScale(Math.max(d.end, minMa)) - timeScale(Math.min(d.start, maxMa)));
+    const words = d.name.split(' ');
+
+    if (words.length > 1 && bandWidth < d.name.length * 8) {
+      el.text(null);
+      el.append('tspan')
+        .attr('x', el.attr('x'))
+        .attr('dy', '0')
+        .text(words[0]);
+      el.append('tspan')
+        .attr('x', el.attr('x'))
+        .attr('dy', '1.3em')
+        .text(words.slice(1).join(' '));
+    } else {
+      el.text(d.name);
+    }
+  });
+
+  // Ma ticks
+  const ticks = d3.range(0, maxMa + 1, 10);
+  gTimelineHeaders.selectAll('.ma-tick')
+    .data(ticks)
+    .join('text')
+    .attr('class', 'ma-tick')
+    .attr('data-ox', d => timeScale(d))
+    .attr('x', d => timeScale(d))
+    .attr('y', headerTop + 78)
+    .attr('text-anchor', 'middle')
+    .attr('fill', 'var(--text)')
+    .attr('font-family', 'system-ui, -apple-system, sans-serif')
+    .attr('font-size', '10px')
+    .attr('font-weight', '400')
+    .attr('letter-spacing', '0.04em')
+    .attr('opacity', 0.8)
+    .text(d => `${d} Ma`);
+
+  // Period boundary ticks in header
+  gTimelineHeaders.selectAll('.period-tick')
+    .data(periods)
+    .join('line')
+    .attr('class', 'period-tick')
+    .attr('data-ox', d => timeScale(d.start))
+    .attr('x1', d => timeScale(d.start))
+    .attr('x2', d => timeScale(d.start))
+    .attr('y1', headerTop)
+    .attr('y2', headerTop + HEADER_HEIGHT)
+    .attr('stroke', 'var(--border)')
+    .attr('stroke-width', 1)
+    .attr('opacity', 0.6);
+
+  // Bottom border of header
+  gTimelineHeaders.append('line')
+    .attr('class', 'timeline-header-border')
+    .attr('x1', -500)
+    .attr('x2', width + 500)
+    .attr('y1', headerTop + HEADER_HEIGHT)
+    .attr('y2', headerTop + HEADER_HEIGHT)
+    .attr('stroke', 'var(--border)')
+    .attr('stroke-width', 1)
+    .attr('opacity', 0.6);
+}
+
+function updateTimelineHeaderPositions(transform) {
+  if (!timelineEnabled || !timeScale) return;
+
+  const k = transform.k;
+  const tx = transform.x;
+
+  // Reposition all header elements: newX = originalX * k + tx
+  gTimelineHeaders.selectAll('.period-label, .epoch-label, .ma-tick')
+    .each(function() {
+      const el = d3.select(this);
+      const ox = +el.attr('data-ox');
+      el.attr('x', ox * k + tx);
+      // Also update tspan x values for wrapped text
+      el.selectAll('tspan').attr('x', ox * k + tx);
+    });
+
+  gTimelineHeaders.selectAll('.period-tick')
+    .each(function() {
+      const el = d3.select(this);
+      const ox = +el.attr('data-ox');
+      el.attr('x1', ox * k + tx).attr('x2', ox * k + tx);
+    });
+
+  // Background and bottom border just need to span the viewport
+  gTimelineHeaders.select('.timeline-header-bg')
+    .attr('x', -tx / 1 - 500)
+    .attr('width', width / 1 + 1000);
+
+  gTimelineHeaders.select('.timeline-header-border')
+    .attr('x1', -tx / 1 - 500)
+    .attr('x2', width / 1 + 500);
+}
+
+// ── Direct layout ──
 function computeLayoutDirect() {
   // Collect visible nodes via DFS
-  const flatNodes = [];
-  const flatLinks = [];
-
   function walk(node, depth, parent) {
     const entry = {
       data: { ...node.data, _origHasChildren: !!node._children && node._children.length > 0, _origCollapsed: !!node._collapsed },
@@ -201,14 +366,12 @@ function computeLayoutDirect() {
       children: null,
       _origNode: node
     };
-    flatNodes.push(entry);
 
     if (node.children && !node._collapsed) {
       const kids = [];
       for (const child of node.children) {
         const childEntry = walk(child, depth + 1, entry);
         kids.push(childEntry);
-        flatLinks.push({ source: entry, target: childEntry });
       }
       entry.children = kids.length ? kids : null;
     }
@@ -219,7 +382,11 @@ function computeLayoutDirect() {
 
   // Convert to d3 hierarchy
   function toPlain(entry) {
-    const obj = { name: entry.data.name, rank: entry.data.rank, info: entry.data.info, timeRange: entry.data.timeRange, _origHasChildren: entry.data._origHasChildren, _origCollapsed: entry.data._origCollapsed, _origNode: entry._origNode };
+    const obj = {
+      name: entry.data.name, rank: entry.data.rank, info: entry.data.info,
+      timeRange: entry.data.timeRange, _origHasChildren: entry.data._origHasChildren,
+      _origCollapsed: entry.data._origCollapsed, _origNode: entry._origNode
+    };
     if (entry.children) {
       obj.children = entry.children.map(toPlain);
     }
@@ -235,16 +402,35 @@ function computeLayoutDirect() {
       .size([360, radius])
       .separation((a, b) => (a.parent === b.parent ? 1 : 2) / (a.depth || 1));
     layout(h);
-    // Space depths evenly
     h.descendants().forEach(d => {
       d.y = (d.depth / maxDepth) * radius;
     });
   } else {
     const leafCount = h.leaves().length;
-    const treeH = Math.max(leafCount * 22, 400);
-    const treeW = Math.max((h.height || 1) * 130, 400);
-    const layout = d3.cluster().size([treeH, treeW]);
-    layout(h);
+    const treeH = Math.max(leafCount * 22 * spacingV, 400);
+
+    if (timelineEnabled) {
+      // Use time scale for x positioning
+      const maxMa = 255;
+      const treeW = Math.max(maxMa * 10 * spacingH, 800);
+      const tScale = d3.scaleLinear().domain([maxMa, 0]).range([0, treeW]);
+
+      // First do a normal cluster layout for y positions
+      const layout = d3.cluster().size([treeH, treeW]);
+      layout(h);
+
+      // Override x (stored as .y in cluster coords) with time-based position
+      h.descendants().forEach(d => {
+        const tr = d.data.timeRange;
+        if (tr) {
+          d.y = tScale(tr[0]);
+        }
+      });
+    } else {
+      const treeW = Math.max((h.height || 1) * 130 * spacingH, 400);
+      const layout = d3.cluster().size([treeH, treeW]);
+      layout(h);
+    }
   }
 
   return h;
@@ -261,6 +447,10 @@ function nodeTransform(d) {
 function linkPath(d) {
   if (currentView === 'radial') {
     return `M${radialPoint(d.target.x, d.target.y)}C${radialPoint(d.target.x, (d.source.y + d.target.y) / 2)} ${radialPoint(d.source.x, (d.source.y + d.target.y) / 2)} ${radialPoint(d.source.x, d.source.y)}`;
+  }
+  // Elbow connector: horizontal then vertical (more conventional for cladograms)
+  if (timelineEnabled) {
+    return `M${d.source.y},${d.source.x}H${d.target.y}V${d.target.x}`;
   }
   return `M${d.target.y},${d.target.x}C${(d.source.y + d.target.y) / 2},${d.target.x} ${(d.source.y + d.target.y) / 2},${d.source.x} ${d.source.y},${d.source.x}`;
 }
@@ -319,7 +509,6 @@ function onNodeDblClick(event, d) {
   // Toggle collapse if has children
   if (orig._children && orig._children.length > 0) {
     if (orig._collapsed) {
-      // Expand this node, but keep its children collapsed
       orig._collapsed = false;
       orig.children = orig._children;
       for (const child of orig.children) {
@@ -339,7 +528,6 @@ function onNodeDblClick(event, d) {
 // ── Collapse/Expand helpers ──
 function collapseAll(node) {
   if (node._children && node._children.length > 0) {
-    // Show root's immediate children, but collapse everything below
     if (node === root) {
       node._collapsed = false;
       node.children = node._children;
@@ -427,7 +615,6 @@ function showDetail(d) {
   if (info.diet) addMeta(meta, 'Diet', info.diet);
   if (info.length_m) addMeta(meta, 'Length', `~${info.length_m} m`);
 
-  const extinct = d.data.extinct !== undefined ? d.data.extinct : true;
   if (d.data.timeRange && d.data.timeRange[1] === 0) {
     addMeta(meta, 'Status', 'Extant');
   } else {
@@ -451,6 +638,7 @@ function addMeta(container, label, value) {
 function setupControls() {
   const btnRadial = document.getElementById('btn-radial');
   const btnRect = document.getElementById('btn-rectangular');
+  const btnTimeline = document.getElementById('btn-timeline');
 
   btnRadial.addEventListener('click', () => {
     if (currentView === 'radial') return;
@@ -467,6 +655,35 @@ function setupControls() {
     btnRect.classList.add('active');
     btnRadial.classList.remove('active');
     resetView();
+    render();
+  });
+
+  btnTimeline.addEventListener('click', () => {
+    timelineEnabled = !timelineEnabled;
+    btnTimeline.classList.toggle('active', timelineEnabled);
+    if (timelineEnabled && currentView !== 'rectangular') {
+      currentView = 'rectangular';
+      btnRect.classList.add('active');
+      btnRadial.classList.remove('active');
+    }
+    resetView();
+    render();
+  });
+
+  document.getElementById('btn-hzoom-in').addEventListener('click', () => {
+    spacingH = Math.min(5, spacingH * 1.25);
+    render();
+  });
+  document.getElementById('btn-hzoom-out').addEventListener('click', () => {
+    spacingH = Math.max(0.2, spacingH / 1.25);
+    render();
+  });
+  document.getElementById('btn-vzoom-in').addEventListener('click', () => {
+    spacingV = Math.min(5, spacingV * 1.25);
+    render();
+  });
+  document.getElementById('btn-vzoom-out').addEventListener('click', () => {
+    spacingV = Math.max(0.2, spacingV / 1.25);
     render();
   });
 
@@ -495,13 +712,15 @@ function setupControls() {
 }
 
 function resetView() {
+  let t;
   if (currentView === 'radial') {
-    const t = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85);
-    svg.transition().duration(500).call(zoomBehavior.transform, t);
+    t = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85);
+  } else if (timelineEnabled) {
+    t = d3.zoomIdentity.translate(width / 6, height / 2 - 40).scale(0.8);
   } else {
-    const t = d3.zoomIdentity.translate(width / 6, height / 2 - 100).scale(1);
-    svg.transition().duration(500).call(zoomBehavior.transform, t);
+    t = d3.zoomIdentity.translate(width / 6, height / 2 - 100).scale(1);
   }
+  svg.transition().duration(500).call(zoomBehavior.transform, t);
 }
 
 // ── Search ──
@@ -557,7 +776,6 @@ function setupSearch() {
 }
 
 function expandToNode(target) {
-  // Expand all ancestors
   let node = target;
   while (node) {
     if (node._collapsed) {
@@ -577,14 +795,13 @@ function highlightNode(origNode) {
 
 function clearHighlights() {
   highlightedNode = null;
-  g.selectAll('.node').classed('search-match', false).classed('dimmed', false);
-  g.selectAll('.link').classed('dimmed', false).classed('highlighted', false);
+  gTree.selectAll('.node').classed('search-match', false).classed('dimmed', false);
+  gTree.selectAll('.link').classed('dimmed', false).classed('highlighted', false);
 }
 
 function applyHighlights() {
   if (!highlightedNode) return;
 
-  // Build set of ancestor names for the highlighted node
   const ancestorPath = new Set();
   let n = highlightedNode;
   while (n) {
@@ -592,11 +809,11 @@ function applyHighlights() {
     n = n.parent;
   }
 
-  g.selectAll('.node')
+  gTree.selectAll('.node')
     .classed('search-match', d => d.data.name === highlightedNode.data.name)
     .classed('dimmed', d => !ancestorPath.has(d.data.name));
 
-  g.selectAll('.link')
+  gTree.selectAll('.link')
     .classed('highlighted', d => ancestorPath.has(d.target.data.name) && ancestorPath.has(d.source.data.name))
     .classed('dimmed', d => !(ancestorPath.has(d.target.data.name) && ancestorPath.has(d.source.data.name)));
 }
